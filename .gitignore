@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Rbuildignore
+.gitignore.swp
+.f*
+man/*
+NAMESPACE
+*.c
+*.o
+*.so
