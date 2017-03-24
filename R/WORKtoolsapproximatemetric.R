@@ -35,10 +35,23 @@ firstordergeodesiceqn <- function(bestfit, chris = NULL) {
 #' 
 #' @export
 geodesicboundaries <- function(bestfit, Thend) {
-  return(data.frame(name=c(names(equations) ),#  , "dummy1"),            # insert the dummy that needs to be introduced because of the sensitivities
-                    yini = c(bestfit, rep(NA, length(bestfit)) ),# ,0), # set dummy-value to 0 
-                    yend = c(Thend, rep(NA, length(bestfit))   ))# ,0))   # set dummy-value to 0
-         )
+  lastini <- lastout[1,-1]
+  lastend <- lastout[nrow(lastout),-1]
+  lastThend <- lastend[1:(length(bestfit))]
+  lastvini <- lastini[(1+length(bestfit)):length(lastini)]
+  lastvend <- lastend[(1+length(bestfit)):length(lastend)]
+  
+  mydf <- NULL
+  if(sum((Thend-lastThend[1:length(bestfit)])^2) < 0.2) {
+    mydf <- data.frame(name=c(names(equations) ),#  , "dummy1"),            # insert the dummy that needs to be introduced because of the sensitivities
+             yini = c(bestfit, lastvini ),# ,0), # set dummy-value to 0 
+             yend = c(Thend, lastvend   ))# ,0))   # set dummy-value to 0
+  }else{
+    mydf <- data.frame(name=c(names(equations) ),#  , "dummy1"),            # insert the dummy that needs to be introduced because of the sensitivities
+               yini = c(bestfit, rep(NA, length(bestfit)) ),# ,0), # set dummy-value to 0 
+               yend = c(Thend, rep(NA, length(bestfit))   ))# ,0))   # set dummy-value to 0
+  }
+  return(mydf)
 }
 
 
@@ -268,6 +281,9 @@ RNCssquaredobj <- function(Thend, fixed = NULL, with_prior = FALSE){#}, sigma = 
   Thend <- c(Thend, fixed) # Achtung, Thend und fixed dürfen nicht überlappen
   Thend <- Thend[names(bestfit)]
   out       <- geodesicbvp(Thend = Thend, bestfit = bestfit)
+  
+  lastout <<- out
+  
   # solve ivp for sensitivities
   loadDLL(GEodemodel$extended)
   jacpTh    <- RNCjacsssens(Thend = Thend , out = out, sigma = 1, bestfit = bestfit, residual = residual)
@@ -301,6 +317,11 @@ RNCssquaredobj <- function(Thend, fixed = NULL, with_prior = FALSE){#}, sigma = 
 
   return(myobjlist)
 }
+
+
+
+
+
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
