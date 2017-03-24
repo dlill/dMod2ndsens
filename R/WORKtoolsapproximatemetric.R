@@ -35,6 +35,8 @@ firstordergeodesiceqn <- function(bestfit, chris = NULL) {
 #' 
 #' @export
 geodesicboundaries <- function(bestfit, Thend) {
+  if(!exists("lastout")) lastout <- matrix(0, ncol = 2*length(bestfit)+1, nrow = 2)
+  
   lastini <- lastout[1,-1]
   lastend <- lastout[nrow(lastout),-1]
   lastThend <- lastend[1:(length(bestfit))]
