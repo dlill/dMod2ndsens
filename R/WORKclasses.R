@@ -19,7 +19,7 @@ odemodel <- function(f, deriv = 1, forcings=NULL, fixed=NULL, modelname = "odemo
   modelname_s <- paste0(modelname, "_s")
   modelname_ss <- paste0(modelname, "_ss")
   
-  func <- cOde::funC(f, forcings = forcings, modelname = modelname , ...)
+  func <- cOde2ndSens::funC(f, forcings = forcings, modelname = modelname , ...)
   extended <- NULL
   hyperextended <-NULL
   
@@ -31,7 +31,7 @@ odemodel <- function(f, deriv = 1, forcings=NULL, fixed=NULL, modelname = "odemo
                            reduce = TRUE)
     fs <- c(f, s)
     outputs <- attr(s, "outputs")
-    extended <- cOde::funC(fs, forcings = forcings, outputs = outputs, modelname = modelname_s, ...)
+    extended <- cOde2ndSens::funC(fs, forcings = forcings, outputs = outputs, modelname = modelname_s, ...)
   }  
   else if (deriv==2) {  
     s <- sensitivitiesSymb(f, 
@@ -41,13 +41,13 @@ odemodel <- function(f, deriv = 1, forcings=NULL, fixed=NULL, modelname = "odemo
                            reduce = TRUE, secondSens = TRUE)
     fs <- c(f, s)
     outputs <- attr(s, "outputs")
-    extended <- cOde::funC(fs, forcings = forcings, outputs = outputs, modelname = modelname_s, ...)
+    extended <- cOde2ndSens::funC(fs, forcings = forcings, outputs = outputs, modelname = modelname_s, ...)
     
     ss <- attr(s, "secondSens")
     # fss <- c.eqnvec(f, s, ss) #schöner, wenn das package gebuildet ist. Funktioniert aber nicht ungebuildet, weil c.eqnvec eine interne funktion ist.
     fss <- as.eqnvec(c(f, s, ss))
     outputs <- c(attr(s, "outputs"), attr(s,"secondOutputs"))
-    hyperextended <- cOde::funC(fss, forcings = forcings, outputs = outputs, modelname = modelname_ss, ...)
+    hyperextended <- cOde2ndSens::funC(fss, forcings = forcings, outputs = outputs, modelname = modelname_ss, ...)
   }  
   
   out <- list(func = func, extended = extended, hyperextended = hyperextended)

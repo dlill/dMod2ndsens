@@ -110,17 +110,17 @@ Thetaobj <- function(Theta, fixed = NULL){
 #' 
 #' @export
 hessianobjfun <- function(sigma = 1 , bestfit) {
+  residual <- combineresiduals(resi(bestfit))
+  myresidual <- as.vector(residual$residual)
+  mysigmas <- residual$sigma
+  myderiv <- data.matrix(attr(residual, "deriv")[,-c(1,2)]) / mysigmas
+  mysderiv <- data.matrix(attr(residual, "sderiv")[,-c(1,2)]) /mysigmas
+  
+  gmunu   <- t(myderiv)%*%myderiv
+  rsderiv <- matrix((myresidual/mysigmas)%*%mysderiv, nrow=length(bestfit))
   
   Thetaobj<-function(Theta, fixed = NULL) {
     Theta <- c(Theta, fixed)
-    residual <- combineresiduals(resi(bestfit))
-    myresidual <- as.vector(residual$residual)
-    mysigmas <- residual$sigma
-    myderiv <- data.matrix(attr(residual, "deriv")[,-c(1,2)]) / mysigmas
-    mysderiv <- data.matrix(attr(residual, "sderiv")[,-c(1,2)]) /mysigmas
-    
-    gmunu   <- t(myderiv)%*%myderiv
-    rsderiv <- matrix((myresidual/mysigmas)%*%mysderiv, nrow=length(Theta))
     DeltaTheta <- Theta-bestfit
     
     value     <- ((myresidual/mysigmas)%*%(myresidual/mysigmas) + 2*(myresidual/mysigmas)%*%myderiv%*%DeltaTheta + DeltaTheta%*%gmunu%*%DeltaTheta + DeltaTheta%*%rsderiv%*%DeltaTheta)
@@ -148,17 +148,20 @@ hessianobjfun <- function(sigma = 1 , bestfit) {
 #' @export
 #'
 #' @examples
-gmunuobjfun <- function(sigma = 1 , bestfit) {
+gmunuobjfun <- function(sigma = 1 , bestfit, residual = NULL) {
+  
+  if (is.null(residual))
+    residual <- combineresiduals(resi(bestfit))
+  
+  myresidual <- as.vector(residual$residual)
+  mysigmas <- residual$sigma
+  myderiv <- data.matrix(attr(residual, "deriv")[,-c(1,2)])/mysigmas
+  mysderiv <- data.matrix(attr(residual, "sderiv")[,-c(1,2)])
+  
+  gmunu   <- t(myderiv)%*%myderiv
   
   gobj<-function(Theta, fixed = NULL) {
     Theta <- c(Theta, fixed)
-    residual <- combineresiduals(resi(bestfit))
-    myresidual <- as.vector(residual$residual)
-    mysigmas <- residual$sigma
-    myderiv <- data.matrix(attr(residual, "deriv")[,-c(1,2)])/mysigmas
-    mysderiv <- data.matrix(attr(residual, "sderiv")[,-c(1,2)])
-    
-    gmunu   <- t(myderiv)%*%myderiv
     # rsderiv <- matrix(myresidual%*%mysderiv, nrow=length(Theta))
     DeltaTheta <- Theta-bestfit
     
