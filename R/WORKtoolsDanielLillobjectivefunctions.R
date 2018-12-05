@@ -111,7 +111,7 @@ Thetaobj <- function(Theta, fixed = NULL){
 #' @export
 hessianobjfun <- function(sigma = 1 , bestfit, residual = NULL) {
   
-  if (!is.null(residual))
+  if (is.null(residual))
     residual <- combineresiduals(resi(bestfit))
   
   myresidual <- as.vector(residual$residual)
