@@ -219,7 +219,12 @@ RNCjacsssens <- function(Thend, out, sigma, bestfit, residual) {
   dimnames(myderiv) <- list(names(bestfit), z)
   
   mysvd <- svd(myderiv)
-  myjac <- mysvd$v%*%diag(1/(mysvd$d))%*%t(mysvd$u) # invert to get dp/dTh
+  safediag <- function(d) {
+    if (length(d) == 1)
+      return(matrix(d))
+    return(diag(d))
+  }
+  myjac <- mysvd$v%*%safediag(1/(mysvd$d))%*%t(mysvd$u) # invert to get dp/dTh
   
 
   

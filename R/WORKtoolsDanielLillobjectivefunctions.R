@@ -109,8 +109,11 @@ Thetaobj <- function(Theta, fixed = NULL){
 #' 
 #' 
 #' @export
-hessianobjfun <- function(sigma = 1 , bestfit) {
-  residual <- combineresiduals(resi(bestfit))
+hessianobjfun <- function(sigma = 1 , bestfit, residual = NULL) {
+  
+  if (!is.null(residual))
+    residual <- combineresiduals(resi(bestfit))
+  
   myresidual <- as.vector(residual$residual)
   mysigmas <- residual$sigma
   myderiv <- data.matrix(attr(residual, "deriv")[,-c(1,2)]) / mysigmas
