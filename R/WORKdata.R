@@ -52,6 +52,7 @@ res <- function (data, out) {
     deriv.data <- data.frame(time = data$time, name = data$name, deriv.prediction)
   }
   
+
   # -------------------------------------------
   # Propagate sderivatives if available
   sderiv <- attr(out, "sderiv")

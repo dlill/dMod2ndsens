@@ -400,7 +400,24 @@ printarray <- function(arr) {
   return(wup)
 }
 
-
+#' print output for cat
+#'
+#' @param mychristoffels 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print_christoffels <- function(mychristoffels) {
+  n <- dim(mychristoffels)[1]
+  lapply(1:n, function(i) {
+    string1 <- paste0("Gamma^",i,"_ab\n")
+    string2 <- capture.output(print(mychristoffels[i,,]))
+    paste0(string1, paste0(string2, collapse = "\n"))
+  }) %>% 
+    do.call(c,.) %>% 
+    paste0(collapse = "\n\n")
+}
 
 #' Commutator of two christoffel matrices
 #' Compute the commutator of two christoffel matrices with one lower index kept constant:
