@@ -410,8 +410,9 @@ printarray <- function(arr) {
 #' @examples
 print_christoffels <- function(mychristoffels) {
   n <- dim(mychristoffels)[1]
+  nm <- dimnames(mychristoffels)[[1]]
   lapply(1:n, function(i) {
-    string1 <- paste0("Gamma^",i,"_ab\n")
+    string1 <- paste0("Gamma^",nm[i],"_ij\n")
     string2 <- capture.output(print(mychristoffels[i,,]))
     paste0(string1, paste0(string2, collapse = "\n"))
   }) %>% 
